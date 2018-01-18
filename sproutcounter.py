@@ -29,8 +29,7 @@ for i in xrange(block_from, block_to):
             sum_vpub_new += js["vpub_new"]
 
 n = sum_vpub_old - sum_vpub_new
-assert(n >= 0.0)
-print "aggregate value entering sprout circuit    = %.8f" % (sum_vpub_old)
-print "aggregate value leaving sprout circuit     = %.8f" % (sum_vpub_new)
-print "shielded value in sprout circuit = %.8f" % (n)
+print "aggregate value entering sprout circuit     = %.8f" % (sum_vpub_old)
+print "aggregate value leaving sprout circuit      = %.8f" % (sum_vpub_new)
+print "net shielded value change in sprout circuit = %.8f" % (n)
 
