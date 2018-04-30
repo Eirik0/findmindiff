@@ -4,7 +4,7 @@ from decimal import *
 import sys
 
 if len(sys.argv) != 3:
-    print "Usage: sproutcounter.py BLOCKFROM BLOCKTO"
+    print "Usage: privacymetrics.py BLOCKFROM BLOCKTO"
     exit(1)
 
 # have a local running instance of zcashd

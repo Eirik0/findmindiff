@@ -4,23 +4,23 @@ pip install python-bitcoinrpc
 
 # Usage
 
-python sproutcounter.py BLOCKFROM BLOCKTO
+python privacymetrics.py BLOCKFROM BLOCKTO
 
 # Example
 
-python sproutcounter.py 396 433
+python privacymetrics.py 396 433
 
     aggregate value entering sprout circuit     = 10.71830000
     aggregate value leaving sprout circuit      = 0.27450000
     net shielded value change in sprout circuit = 10.44380000
 
-python sproutcounter.py 1 241964
+python privacymetrics.py 1 241964
 
     aggregate value entering sprout circuit     = 3634697.72584490
     aggregate value leaving sprout circuit      = 3510258.15050241
     net shielded value change in sprout circuit = 124439.57534249
 
-python sproutcounter.py 241965 256819
+python privacymetrics.py 241965 256819
     aggregate value entering sprout circuit     = 220706.44213950
     aggregate value leaving sprout circuit      = 215666.57193453
     net shielded value change in sprout circuit = 5039.87020497
