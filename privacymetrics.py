@@ -21,14 +21,26 @@ statsFile = open(filePath + fileName, "w+")
 
 statsFile.write("blockHeight,blockTime,txId,isCoinBase,numVIn,totalVIn,numVOut,totalVOut,numJS,totalJSIn,totalJSOut,isSpendingCoinBase,type\n")
 
+totalBlocks = block_to - block_from + 1
+onePercent = int(totalBlocks / 100)
+tenPercent = int(totalBlocks / 10)
+numBlocks = 1
+numTxs = 0
+
 for blockHeight in xrange(block_from, block_to + 1): # +1 so inclusive
+    if (numBlocks % onePercent) == 0:
+        sys.stdout.write(".")
+        sys.stdout.flush()
+    if (numBlocks % tenPercent) == 0:
+        print ""
+
     block = api.getblock("%d" % blockHeight)
     blockTime = block["time"]
     for txid in block["tx"]:
         try:
             tx = api.getrawtransaction(txid, 1)
         except JSONRPCException as e:
-            print "In block {}, txid {}: {}\n".format(blockHeight, txid, e)
+            print "\nIn block {}, txid {}: {}".format(blockHeight, txid, e)
             continue
 
         isCoinBase = len(tx["vin"]) == 1 and "coinbase" in tx["vin"][0]
@@ -75,6 +87,11 @@ for blockHeight in xrange(block_from, block_to + 1): # +1 so inclusive
                 len(tx["vjoinsplit"]), formatJSIn, formatJSOut,
                 isSpendingCoinBase, txType))
 
+        numTxs += 1
+    
+    numBlocks += 1
+
 statsFile.flush()
 statsFile.close()
 
+print "{} transactions written to {}".format(numTxs, filePath + fileName)
