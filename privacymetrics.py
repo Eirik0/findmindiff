@@ -34,15 +34,10 @@ for blockHeight in xrange(block_from, block_to + 1): # +1 so inclusive
     if (numBlocks % tenPercent) == 0:
         print ""
 
-    block = api.getblock("%d" % blockHeight)
+    block = api.getblock("{}".format(blockHeight), 2)
     blockTime = block["time"]
-    for txid in block["tx"]:
-        try:
-            tx = api.getrawtransaction(txid, 1)
-        except JSONRPCException as e:
-            print "\nIn block {}, txid {}: {}".format(blockHeight, txid, e)
-            continue
-
+    for tx in block["tx"]:
+        txid = tx["txid"]
         isCoinBase = len(tx["vin"]) == 1 and "coinbase" in tx["vin"][0]
 
         totalVIn = 0
@@ -82,7 +77,8 @@ for blockHeight in xrange(block_from, block_to + 1): # +1 so inclusive
         formatJSIn = "{0:f}".format(totalJSIn)
         formatJSOut = "{0:f}".format(totalJSOut)
 
-        statsFile.write("{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(blockHeight,blockTime,txid,isCoinBase,
+        statsFile.write("{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(
+                blockHeight,blockTime,txid,isCoinBase,
                 len(tx["vin"]), formatVIn, len(tx["vout"]), formatVOut, 
                 len(tx["vjoinsplit"]), formatJSIn, formatJSOut,
                 isSpendingCoinBase, txType))
