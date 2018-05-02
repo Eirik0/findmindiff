@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 from bitcoinrpc.authproxy import AuthServiceProxy, JSONRPCException
 from os.path import expanduser
-import sys, os
+import os, sys, time
 
 if len(sys.argv) != 3:
     print "Usage: privacymetrics.py BLOCKFROM BLOCKTO"
@@ -21,18 +21,26 @@ statsFile = open(filePath + fileName, "w+")
 
 statsFile.write("blockHeight,blockTime,txId,isCoinBase,numVIn,totalVIn,numVOut,totalVOut,numJS,totalJSIn,totalJSOut,isSpendingCoinBase,type\n")
 
+print ""
+
 totalBlocks = block_to - block_from + 1
-onePercent = int(totalBlocks / 100)
-tenPercent = int(totalBlocks / 10)
+onePercent = max(int(totalBlocks / 100), 1)
+tenPercent = max(int(totalBlocks / 10), 1)
 numBlocks = 1
 numTxs = 0
+
+start_time = time.time()
+last_update_time = start_time
 
 for blockHeight in xrange(block_from, block_to + 1): # +1 so inclusive
     if (numBlocks % onePercent) == 0:
         sys.stdout.write(".")
         sys.stdout.flush()
     if (numBlocks % tenPercent) == 0:
-        print ""
+        current_time = time.time()
+        elapsed = int(current_time - last_update_time)
+        print "+{:02d}:{:02d}:{:02d}".format(elapsed // 3600, (elapsed % 3600 // 60), elapsed % 60)
+        last_update_time = current_time
 
     block = api.getblock("{}".format(blockHeight), 2)
     blockTime = block["time"]
@@ -90,4 +98,6 @@ for blockHeight in xrange(block_from, block_to + 1): # +1 so inclusive
 statsFile.flush()
 statsFile.close()
 
-print "{} transactions written to {}".format(numTxs, filePath + fileName)
+elapsed = int(time.time() - start_time)
+elapsed_time_str = "{:02d}:{:02d}:{:02d}".format(elapsed // 3600, (elapsed % 3600 // 60), elapsed % 60)
+print "\n{} transactions written to {} in {}".format(numTxs, filePath + fileName, elapsed_time_str)
