@@ -95,10 +95,9 @@ for blockHeight in xrange(block_from, block_to + 1): # +1 so inclusive
             for vin in tx["vin"]:
                 prevHash = vin["txid"]
                 prevN = vin["vout"]
+                cachedPrevTx = None
                 if cachedTxs.has_key(prevHash):
-                    prevTx = cachedTxs[prevHash]
-                    totalVIn += prevTx.values[prevN]
-                    isSpendingCoinBase |= prevTx.isCoinBase
+                    cachedPrevTx = cachedTxs[prevHash]
                 else:
                     try:
                         prevTx = api.getrawtransaction(prevHash, 1)
@@ -106,8 +105,12 @@ for blockHeight in xrange(block_from, block_to + 1): # +1 so inclusive
                         numErrors += 1
                         errorFile.write("Error when loading prevout {} for transaction {}: {}\n".format(prevHash, txid, e))
                         continue
-                    totalVIn += prevTx["vout"][prevN]["value"]
-                    isSpendingCoinBase |= len(prevTx["vin"]) == 1 and "coinbase" in prevTx["vin"][0]
+                    cachedPrevTx = CachedTx(prevTx)
+                    cachedTxs[prevHash] = cachedPrevTx
+                    for vout in prevTx["vout"]:
+                        cachedPrevTx.values.append(vout["value"])
+                totalVIn += cachedPrevTx.values[prevN]
+                isSpendingCoinBase |= cachedPrevTx.isCoinBase
 
         totalVOut = 0
         for vout in tx["vout"]:
