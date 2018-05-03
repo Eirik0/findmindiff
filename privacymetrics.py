@@ -144,11 +144,10 @@ statsFile.close()
 elapsed = int(time.time() - start_time)
 elapsed_time_str = "{:02d}:{:02d}:{:02d}".format(elapsed // 3600, (elapsed % 3600 // 60), elapsed % 60)
 print "\n{} transactions written to {} in {}".format(numTxs, filePath + statsFileName, elapsed_time_str)
-if numErrors > 0:
-    print "{} errors written to {}".format(numErrors, filePath + errorFileName)
-else:
+
+if numErrors == 0:
     errorFile.write("No errors\n")
-    print "with no errors"
+print "{} errors written to {}".format(numErrors, filePath + errorFileName)
 
 errorFile.flush()
 errorFile.close()
