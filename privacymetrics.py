@@ -71,11 +71,11 @@ for blockHeight in xrange(block_from, block_to + 1): # +1 so inclusive
         try:
             block = api.getblock("{}".format(blockHeight), 2)
             break
-        except httplib.BadStatusLine as e:
+        except Exception as e:
             numErrors += 1
-            errorFile.write("Error when loading block {}: {}\n".format(blockHeight, e.message))
-            if attempt == 1:
-                time.sleep(1)
+            errorFile.write("Error when loading block {} - {}: {}\n".format(blockHeight, type(e), e.message))
+            # Create a new proxy as we may not be able to send more requests without a new connection
+            api = AuthServiceProxy("http://username:password@127.0.0.1:8232")
 
     if block is None:
         errorFile.write("Skipping block {}\n".format(blockHeight))
