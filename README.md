@@ -15,7 +15,7 @@ python findmindiff.py (BLOCKFROM) (BLOCKTO)
 
 # Example
 
-python findmindiff.py 0 1000
+python findmindiff.py 290000
 
     loading blocks 290000-303587...
 
